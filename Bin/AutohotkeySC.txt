@@ -1,0 +1,1 @@
+Used to allow scipted compilations. Needs to be in the folder with the script you wish to compile.
