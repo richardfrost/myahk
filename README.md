@@ -40,7 +40,7 @@ MyAHK.exe must be placed in a trusted location such as &quot;C:\Program Files\&q
 | `APPSKEY+ENTER` | Insert a line break (useful when hitting enter will submit a form) |
 | `APPSKEY+TAB` | Insert a tab (useful when pressing tab would change the focus) |
 | `APPSKEY+INSERT` | Search Google for selected text, or if URL go straight there |
-| `Lshift+RSHIFT` | Reload AHK |
+| `LSHIFT+RSHIFT` | Reload AHK |
 | `CTRL+ALT+BACKSPACE` | Close AHK |
 | `ALT+PAUSE` | Enable/Disable AHK |
 | `WIN+C` | Open/Activate Calculator |
