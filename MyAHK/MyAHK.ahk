@@ -70,12 +70,11 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Always on Top Toggle
 ^+a::
-; Don't allow the desktop shell to be Always on Top (Progman < Win8, WorkerW = Win8, Shell_TrayWnd = Taskbar, DV2ControlHost = Win7 StartMenu)
-WinGetClass, CurrentWinClass, A
-If (CurrentWinClass = "Progman" || CurrentWinClass = "WorkerW" || CurrentWinClass = "Shell_TrayWnd" || CurrentWinClass = "DV2ControlHost")
+	; Don't allow the desktop shell to be Always on Top (Progman < Win8, WorkerW = Win8, Shell_TrayWnd = Taskbar, DV2ControlHost = Win7 StartMenu)
+	WinGetClass, CurrentWinClass, A
+	If (CurrentWinClass = "Progman" || CurrentWinClass = "WorkerW" || CurrentWinClass = "Shell_TrayWnd" || CurrentWinClass = "DV2ControlHost")
 Return
 
 WinSet, AlwaysOnTop, Toggle, A		; Toggle Always on Top status
@@ -90,6 +89,7 @@ If (ExStyle & 0x8)  ; 0x8 is WS_EX_TOPMOST.
 Else ; Not Always On Top
 	TransparentWindow("On-Top Disabled",550,12,"Teal",0,0,x+w/2-boxW/2,y+h/2-boxH/2,boxW,boxH)
 Return
+
 ; #############################################################################
 ; ###################################### End Of File AlwaysOnTopToggle.ahk
 ; #############################################################################
@@ -98,10 +98,10 @@ Return
 ; ###################################### Beginning of file AppsKey.ahk
 ; #############################################################################
 ;************************************************;
-; Perform several actions by pressing keys in 
+; Perform several actions by pressing keys in
 ;   conjunction with the Apps Key.
 ;
-; Instructions: 
+; Instructions:
 ; 	AppsKey+Enter - Insert a line break
 ;	AppsKey+Tab	  - Insert tab
 ;	AppsKey+LWin  - Disable Windows keys
@@ -119,18 +119,15 @@ Return
 
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 
-
 ; Insert a line break (useful when hitting enter will submit a form)
 AppsKey & Enter::
 	PutText("`r`n")
 Return
 
-
 ; Insert a tab (useful when pressing tab would change the focus)
 AppsKey & tab::
 	PutText("`t")
 Return
-
 
 ; Disable/Enable the Windows Keys
 AppsKey & LWin::
@@ -144,48 +141,47 @@ AppsKey & LWin::
 	}
 Return
 
-
 ; Search Google for selected text, or if URL go straight there.
 AppsKey & Insert::
 TempText := GetText()
 TempText := RegExReplace(TempText, "^\s+|\s+$") ;trim whitespace
 If RegExMatch(TempText, "\w\.[a-zA-Z]+(/|$)") ;contains .com etc
 {
-   If SubStr(TempText, 1, 4) != "http"
-      TempText := "http://" . TempText
+	If SubStr(TempText, 1, 4) != "http"
+		TempText := "http://" . TempText
 }
 Else
 {
-   If InStr(TempText, " ")
-   {
-      StringReplace TempText, TempText, %A_Space%, +
-      TempText := "%22" . TempText . "%22"
-   }
-   TempText := "http://www.google.com/search?&q=" . TempText
+	If InStr(TempText, " ")
+	{
+		StringReplace TempText, TempText, %A_Space%, +
+		TempText := "%22" . TempText . "%22"
+	}
+	TempText := "http://www.google.com/search?&q=" . TempText
 }
 Run %TempText%
 Return
-
 
 ; Hide or unhide the active window
 AppsKey & h::
 If GetKeyState("shift")
 {
-   Loop Parse, HiddenWins, |
-      WinShow ahk_id %A_LoopField%
-   HiddenWins =
+	Loop Parse, HiddenWins, |
+		WinShow ahk_id %A_LoopField%
+	HiddenWins =
 }
 else
 {
-   MyWin := WinExist("A")
-   if IsWindow(MyWin)
-   {
-      HiddenWins .= (HiddenWins ? "|" : "") . MyWin
-      WinHide ahk_id %MyWin%
-      GroupActivate All
-   }
+	MyWin := WinExist("A")
+	if IsWindow(MyWin)
+	{
+		HiddenWins .= (HiddenWins ? "|" : "") . MyWin
+		WinHide ahk_id %MyWin%
+		GroupActivate All
+	}
 }
 Return
+
 ; #############################################################################
 ; ###################################### End Of File AppsKey.ahk
 ; #############################################################################
@@ -5506,7 +5502,6 @@ return  ; This makes the above hotstrings do nothing so that they override the i
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Reload the main AHK Script
 RShift & LShift::
 LShift & RShift::
@@ -5516,13 +5511,11 @@ LShift & RShift::
 		Reload
 Return
 
-
 ; Exit AutoHotKey
 ^!Backspace::
 	TransparentWindow("Closing AHK", 450)
 	ExitApp
 Return
-
 
 ; Suspend & Pause AutoHotKey
 !Pause::
@@ -5534,8 +5527,9 @@ Return
 	If A_IsSuspended = 0
 		TransparentWindow("AHK Enabled", 400)
 
-  Pause, Toggle, 1 ; Pause running threads
+	Pause, Toggle, 1 ; Pause running threads
 Return
+
 ; #############################################################################
 ; ###################################### End Of File Autohotkey.ahk
 ; #############################################################################
@@ -5551,23 +5545,20 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
-
 ; Start Calculator or switch focus to calculator is already running
 #c::
 	; If calculator is not running, open it
-  IfWinNotExist ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
+	IfWinNotExist ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
 		Run, calc.exe
 	Else ; If calculator is running, switch focus to it
 		WinActivate ^Calculator$, ; Removed ahk_class for Windows 10 support
 Return
-
 
 ; Start a new Calculator instance
 +#c::
 	Run, calc.exe ; Run application
 	WinActivate, ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
 Return
-
 
 ; Close Calculator Window
 #IfWinActive ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
@@ -5585,13 +5576,12 @@ Return
 ; Provide a menu to manipulate text.
 ; Credit: Richard
 ;
-; Instructions: Select your desired text and  
+; Instructions: Select your desired text and
 ;  press Left-Win+Caps-Lock to see the menu.
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. You may need "Event" for some UAC and Java applications
 #Include %A_ScriptDir%\..\Lib\Case.ahk
-
 
 ; Case menu
 MenuCase:
@@ -5610,22 +5600,22 @@ MenuCase:
 	Menu,Case,Add,&Reverse Selection,REVERSE
 Return
 
-
 ; Hotkey to activate menu
 ; *CapsLock:: ; * will fire the hotkey even if extra modifiers are being held down
 LWin & CapsLock::
 	OAutoTrim = %A_AutoTrim% ; Store Old AutoTrim Value.
-  AutoTrim On  ; Strip out any leading and trailing whitespace from selection
-  
-  GoSub, MenuCase ; Create the menu. Done initially to ensure it can be deleted
+	AutoTrim On  ; Strip out any leading and trailing whitespace from selection
+
+	GoSub, MenuCase ; Create the menu. Done initially to ensure it can be deleted
 
 	Clip()
 	If NOT ERRORLEVEL ; Only show menu when something is selected
 		Menu, Case, Show
-	
+
 	Menu,Case,DeleteAll ; Clear menu to avoid additional separators being appeneded
-  AutoTrim, %OAutoTrim%
+	AutoTrim, %OAutoTrim%
 Return
+
 ; #############################################################################
 ; ###################################### End Of File Case.ahk
 ; #############################################################################
@@ -5675,7 +5665,7 @@ Return
 ; #############################################################################
 ;************************************************;
 ; Script Function:
-;   Add CTRL+V paste shortcut & CTRL+W close 
+;   Add CTRL+V paste shortcut & CTRL+W close
 ;	  window shortcut to Window's Command Prompt
 ;
 ;   Also adds scrolling with CTRL+UP/Down
@@ -5687,13 +5677,12 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 Global CMDToggle = 1 ; Included in MyAHK-Build.ahk
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Command Prompt Tweaks
 #IfWinActive ahk_class ConsoleWindowClass
 ; Toggle Command Prompt aliases on/off with ALT+F12 (On by default)
 !F12::
 	CMDToggle := CMDToggle<1  ? 1 : 0
-	
+
 	WinGetPos,x,y,w,h,A 				; Get active window's width/heigth
 	boxW:=146, boxH=38 ; Variables for TransparentWindow box size (224, 55)
 
@@ -5726,7 +5715,6 @@ Return
 Return
 #IfWinActive
 
-
 ; Command Prompt aliases that can be problematic with some bash-like shells. Disable with ALT+F12, not applied to PowerShell windows.
 #If WinActive("ahk_class ConsoleWindowClass","","i)PowerShell") && (CMDToggle)
 
@@ -5746,6 +5734,7 @@ return
 :c:ps::start powershell
 :c:rm::del
 #If
+
 ; #############################################################################
 ; ###################################### End Of File CMDPrompt.ahk
 ; #############################################################################
@@ -5763,47 +5752,44 @@ return
 #NoEnv ; Recommended for performance and compatibility with future AutoHotkey releases.
 SendMode Input ; Recommended for new scripts due to its superior speed and reliability.
 
-
 ; Insert date (MM/DD/YYYY)
 ^;::
-  FormatTime, CurrentDate,, ShortDate
-  SendInput %CurrentDate%
+	FormatTime, CurrentDate,, ShortDate
+	SendInput %CurrentDate%
 Return
-
 
 ; Insert Long Date (includes weekday)
 +^;::
-  FormatTime, CurrentDate,, LongDate
-  SendInput %CurrentDate%
+	FormatTime, CurrentDate,, LongDate
+	SendInput %CurrentDate%
 return
-
 
 ; Insert Time and Date
 !;::
-  FormatTime, CurrentDate, 
-  SendInput %CurrentDate%
+	FormatTime, CurrentDate,
+	SendInput %CurrentDate%
 return
 
-
 ; Date/Time Variables:
-;A_YYYY Current 4-digit year (e.g. 2004). Synonymous with A_Year. Note: To retrieve a formatted time or date appropriate for your locale and language, use "FormatTime, OutputVar" (time and long date) or "FormatTime, OutputVar,, LongDate" (retrieves long-format date). 
-;A_MM Current 2-digit month (01-12). Synonymous with A_Mon. 
-;A_DD Current 2-digit day of the month (01-31). Synonymous with A_MDay. 
-;A_MMMM Current month's full name in the current user's language, e.g. July 
-;A_MMM Current month's abbreviation in the current user's language, e.g. Jul 
-;A_DDDD Current day of the week's full name in the current user's language, e.g. Sunday 
-;A_DDD Current day of the week's 3-letter abbreviation in the current user's language, e.g. Sun 
-;A_WDay Current 1-digit day of the week (1-7). 1 is Sunday in all locales. 
-;A_YDay Current day of the year (1-366). The value is not zero-padded, e.g. 9 is retrieved, not 009. To retrieve a zero-padded value, use the following: FormatTime, OutputVar, , YDay0 
-;A_YWeek Current year and week number (e.g. 200453) according to ISO 8601. To separate the year from the week, use StringLeft, Year, A_YWeek, 4 and StringRight, Week, A_YWeek, 2. Precise definition of A_YWeek: If the week containing January 1st has four or more days in the new year, it is considered week 1. Otherwise, it is the last week of the previous year, and the next week is week 1. 
-;A_Hour Current 2-digit hour (00-23) in 24-hour time (for example, 17 is 5pm). To retrieve 12-hour time as well as an AM/PM indicator, follow this example: FormatTime, OutputVar, , h:mm:ss tt 
-;A_Min Current 2-digit minute (00-59). 
+;A_YYYY Current 4-digit year (e.g. 2004). Synonymous with A_Year. Note: To retrieve a formatted time or date appropriate for your locale and language, use "FormatTime, OutputVar" (time and long date) or "FormatTime, OutputVar,, LongDate" (retrieves long-format date).
+;A_MM Current 2-digit month (01-12). Synonymous with A_Mon.
+;A_DD Current 2-digit day of the month (01-31). Synonymous with A_MDay.
+;A_MMMM Current month's full name in the current user's language, e.g. July
+;A_MMM Current month's abbreviation in the current user's language, e.g. Jul
+;A_DDDD Current day of the week's full name in the current user's language, e.g. Sunday
+;A_DDD Current day of the week's 3-letter abbreviation in the current user's language, e.g. Sun
+;A_WDay Current 1-digit day of the week (1-7). 1 is Sunday in all locales.
+;A_YDay Current day of the year (1-366). The value is not zero-padded, e.g. 9 is retrieved, not 009. To retrieve a zero-padded value, use the following: FormatTime, OutputVar, , YDay0
+;A_YWeek Current year and week number (e.g. 200453) according to ISO 8601. To separate the year from the week, use StringLeft, Year, A_YWeek, 4 and StringRight, Week, A_YWeek, 2. Precise definition of A_YWeek: If the week containing January 1st has four or more days in the new year, it is considered week 1. Otherwise, it is the last week of the previous year, and the next week is week 1.
+;A_Hour Current 2-digit hour (00-23) in 24-hour time (for example, 17 is 5pm). To retrieve 12-hour time as well as an AM/PM indicator, follow this example: FormatTime, OutputVar, , h:mm:ss tt
+;A_Min Current 2-digit minute (00-59).
 ;
-;A_Sec Current 2-digit second (00-59). 
-;A_MSec Current 3-digit millisecond (000-999). To remove the leading zeros, follow this example: Milliseconds := A_MSec + 0 
-;A_Now The current local time in YYYYMMDDHH24MISS format. Note: Date and time math can be performed with EnvAdd and EnvSub. Also, FormatTime can format the date and/or time according to your locale or preferences. 
-;A_NowUTC The current Coordinated Universal Time (UTC) in YYYYMMDDHH24MISS format. UTC is essentially the same as Greenwich Mean Time (GMT). 
-;A_TickCount The number of milliseconds since the computer was rebooted. By storing A_TickCount in a variable, elapsed time can later be measured by subtracting that variable from the latest A_TickCount value. For example: 
+;A_Sec Current 2-digit second (00-59).
+;A_MSec Current 3-digit millisecond (000-999). To remove the leading zeros, follow this example: Milliseconds := A_MSec + 0
+;A_Now The current local time in YYYYMMDDHH24MISS format. Note: Date and time math can be performed with EnvAdd and EnvSub. Also, FormatTime can format the date and/or time according to your locale or preferences.
+;A_NowUTC The current Coordinated Universal Time (UTC) in YYYYMMDDHH24MISS format. UTC is essentially the same as Greenwich Mean Time (GMT).
+;A_TickCount The number of milliseconds since the computer was rebooted. By storing A_TickCount in a variable, elapsed time can later be measured by subtracting that variable from the latest A_TickCount value. For example:
+
 ; #############################################################################
 ; ###################################### End Of File Date.ahk
 ; #############################################################################
@@ -5819,16 +5805,16 @@ return
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
-
 ^F12::
-   ControlGet, HWND, Hwnd,, SysListView321, ahk_class Progman
-   If HWND =
-      ControlGet, HWND, Hwnd,, SysListView321, ahk_class WorkerW
-   If DllCall("IsWindowVisible", UInt, HWND)
-      WinHide, ahk_id %HWND%
-   Else
-      WinShow, ahk_id %HWND%
+	ControlGet, HWND, Hwnd,, SysListView321, ahk_class Progman
+	If HWND =
+		ControlGet, HWND, Hwnd,, SysListView321, ahk_class WorkerW
+	If DllCall("IsWindowVisible", UInt, HWND)
+		WinHide, ahk_id %HWND%
+	Else
+		WinShow, ahk_id %HWND%
 Return
+
 ; #############################################################################
 ; ###################################### End Of File DesktopIconToggle.ahk
 ; #############################################################################
@@ -5851,78 +5837,75 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; This can only execute if the keyboard is NOT blocked,
 ; so it can't be used to unblock the keyboard.
 ^!+k::
-  KeyWait, Ctrl ; don't block Ctrl key-up
-  KeyWait, Alt  ; or Alt key-up
-  KeyWait, Shift  ; or Shift key-up
-  KeyWait, k    ; or k-up
-  BlockKeyboard()
+	KeyWait, Ctrl ; don't block Ctrl key-up
+	KeyWait, Alt  ; or Alt key-up
+	KeyWait, Shift  ; or Shift key-up
+	KeyWait, k    ; or k-up
+	BlockKeyboard()
 return
 
 BlockKeyboard(block=-1) ; -1, true or false.
 {
-  static hHook = 0, cb = 0
-  global notray
-  
-  if !cb ; register callback once only.
-    cb := RegisterCallback("BlockKeyboard_HookProc")
- 
-  if (block = -1) ; toggle
-    block := (hHook=0)
- 
-  if ((hHook!=0) = (block!=0)) ; already (un)blocked, no action necessary.
-    return
- 
-  if (block) {
-    hHook := DllCall("SetWindowsHookEx"
-      , "int", 13  ; WH_KEYBOARD_LL
-      , "uint", cb ; lpfn (callback)
-      , "uint", 0  ; hMod (NULL)
-      , "uint", 0) ; dwThreadId (all threads)
-	  
-	  ; Display message to user
-	  TransparentWindow("Keyboard Disabled", 450)
-  }
-  else
-  {
-    
-    DllCall("UnhookWindowsHookEx", "uint", hHook)
-    hHook = 0
-	
-	TransparentWindow("Keyboard Enabled", 450)
-  }
-}
+	static hHook = 0, cb = 0
+	global notray
 
+	if !cb ; register callback once only.
+		cb := RegisterCallback("BlockKeyboard_HookProc")
+
+	if (block = -1) ; toggle
+		block := (hHook=0)
+
+	if ((hHook!=0) = (block!=0)) ; already (un)blocked, no action necessary.
+		return
+
+	if (block) {
+		hHook := DllCall("SetWindowsHookEx"
+			, "int", 13  ; WH_KEYBOARD_LL
+			, "uint", cb ; lpfn (callback)
+			, "uint", 0  ; hMod (NULL)
+			, "uint", 0) ; dwThreadId (all threads)
+
+		; Display message to user
+		TransparentWindow("Keyboard Disabled", 450)
+	}
+	else
+	{
+		DllCall("UnhookWindowsHookEx", "uint", hHook)
+		hHook = 0
+		TransparentWindow("Keyboard Enabled", 450)
+	}
+}
 
 BlockKeyboard_HookProc(nCode, wParam, lParam)
 {
-    static count = 0
-    
-    ; Unlock keyboard if "unlock" typed in
-    if (NumGet(lParam+8) & 0x80) { ; key up
-      if (count = 0 && NumGet(lParam+4) = 0x16) {        ; 'u'
-        count = 1
-      } else if (count = 1 && NumGet(lParam+4) = 0x31) { ; 'n'
-        count = 2
-      } else if (count = 2 && NumGet(lParam+4) = 0x26) { ; 'l'
-        count = 3
-      } else if (count = 3 && NumGet(lParam+4) = 0x18) { ; 'o'
-        count = 4
-      } else if (count = 4 && NumGet(lParam+4) = 0x2E) { ; 'c'
-        count = 5
-      } else if (count = 5 && NumGet(lParam+4) = 0x25) { ; 'k'
-        count = 0
-        BlockKeyboard(false)
-      } else {
-        count = 0
-      }
-    }
+	static count = 0
 
-    return 1
+	; Unlock keyboard if "unlock" typed in
+	if (NumGet(lParam+8) & 0x80) { ; key up
+		if (count = 0 && NumGet(lParam+4) = 0x16) {        ; 'u'
+			count = 1
+		} else if (count = 1 && NumGet(lParam+4) = 0x31) { ; 'n'
+			count = 2
+		} else if (count = 2 && NumGet(lParam+4) = 0x26) { ; 'l'
+			count = 3
+		} else if (count = 3 && NumGet(lParam+4) = 0x18) { ; 'o'
+			count = 4
+		} else if (count = 4 && NumGet(lParam+4) = 0x2E) { ; 'c'
+			count = 5
+		} else if (count = 5 && NumGet(lParam+4) = 0x25) { ; 'k'
+			count = 0
+			BlockKeyboard(false)
+		} else {
+			count = 0
+		}
+	}
+
+	return 1
 }
+
 ; #############################################################################
 ; ###################################### End Of File DisableKeyboard.ahk
 ; #############################################################################
@@ -5941,21 +5924,21 @@ Global BlockMouseToggle = 0 ; Included in MyAHK-Build.ahk
 #Include %A_ScriptDir%\..\Lib\BlockUserInput.ahk
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ^!+m::
-  If BlockMouseToggle = 0 ; block mouse input
-  {
-  	BlockMouseInput()
-  	BlockMouseToggle := BlockMouseToggle<1  ? 1 : 0
-  	TransparentWindow("Mouse Disabled", 450)
-  }
-  Else If BlockMouseToggle = 1 ; restore mouse input
-  {
-  	UnblockMouseInput()
-  	BlockMouseToggle := BlockMouseToggle<1  ? 1 : 0
-  	TransparentWindow("Mouse Enabled", 450)
-  }
+	If BlockMouseToggle = 0 ; block mouse input
+	{
+		BlockMouseInput()
+		BlockMouseToggle := BlockMouseToggle<1  ? 1 : 0
+		TransparentWindow("Mouse Disabled", 450)
+	}
+	Else If BlockMouseToggle = 1 ; restore mouse input
+	{
+		UnblockMouseInput()
+		BlockMouseToggle := BlockMouseToggle<1  ? 1 : 0
+		TransparentWindow("Mouse Enabled", 450)
+	}
 Return
+
 ; #############################################################################
 ; ###################################### End Of File DisableMouse.ahk
 ; #############################################################################
@@ -5970,10 +5953,10 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
-
 #IfWinActive - Excel ahk_class XLMAIN
-	^Backspace::Send ^+{Left}{Backspace}
+^Backspace::Send ^+{Left}{Backspace}
 #IfWinActive
+
 ; #############################################################################
 ; ###################################### End Of File Excel.ahk
 ; #############################################################################
@@ -5992,7 +5975,6 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 Global ExecutorToggle = 1 ; True for active, included in MyAHK-Build.ahk
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
-
 
 ; Only enable if Executor exists
 #If ExecutorExists()
@@ -6048,14 +6030,13 @@ Global ExecutorToggle = 1 ; True for active, included in MyAHK-Build.ahk
 ; Open specified folders in Explorer.
 ; Credit: Lifehacker
 ;
-; Instructions: Specify path in script to be 
+; Instructions: Specify path in script to be
 ; executed with the Win+W shortcut to start
 ; Windows Explorer.
 ;************************************************;
 #NoEnv ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 #Include %A_ScriptDir%\..\Lib\ParentDir.ahk
-
 
 ; Close various windows with CTRL+W (System windows may require admin privileges)
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
@@ -6066,25 +6047,21 @@ GroupAdd, CloseWindows, ahk_class MMCMainFrame                      ; System: MM
 GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
 GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
 
-
 ; Disable the F1 help window, helpctr.exe
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
 GroupAdd, DisableHelpF1, ahk_class CabinetWClass  ; Win8 Explorer
 GroupAdd, DisableHelpF1, ahk_class WorkerW        ; Win8 Desktop
 GroupAdd, DisableHelpF1, ahk_class Progman        ; Win7 Explorer
 
-
 ; Close various windows with CTRL+W (System windows may require admin privileges)
 #IfWinActive ahk_group CloseWindows
 	^w::WinClose
 #IfWinActive
 
-
 ; Disable the F1 help window, helpctr.exe
 #IfWinActive ahk_group DisableHelpF1
 	F1::Return
 #IfWinActive
-
 
 ; Open %SyncHome% folder, switch to currently running instance, or open user Downloads
 *#w::
@@ -6112,11 +6089,10 @@ GroupAdd, DisableHelpF1, ahk_class Progman        ; Win7 Explorer
 	}
 Return
 
-
 ; Open %Working% folder, switch to currently running instance, or open user Downloads
 +#d::
 	EnvGet, OutputVar, Working ; Environmental Variable Path
-	
+
 	; If %Working% doesn't exist or doesn't point to an existing folder, use %UserProfile%\Downloads.
 	IfNotExist, %OutputVar%
 	{
@@ -6125,11 +6101,11 @@ Return
 		Else ; If the desktop is already open, make it active.
 			WinActivate Desktop ahk_class CabinetWClass
 	}
-	Else 
+	Else
 	{
 		OutputVar := OutputVar . "\" ; ParentDir needs to have the trailing baskslash when ending on a folder.
 		DirName := ParentDir(OutputVar)
-		
+
 		IfWinNotExist, %DirName% ahk_class CabinetWClass ; Open the Working directory if it is not already open.
 			Run, Explore %OutputVar%
 		Else ; If the WorkingDir is already open, make it active.
@@ -6137,22 +6113,20 @@ Return
 	}
 Return
 
-
 ; Explore to Desktop
 ;+#d::
 ;	IfWinNotExist, Desktop ahk_class CabinetWClass ; Open the desktop if it is not already open.
 ;		Run, Explore "Shell:Desktop"
 ;	Else ; If the desktop is already open, make it active.
-;		WinActivate Desktop ahk_class CabinetWClass 
+;		WinActivate Desktop ahk_class CabinetWClass
 ;Return
-
 
 ; Lock workstation
 ^!l::Run, % "rundll32.exe user32.dll,LockWorkStation"
 
-
 ; Remap Right Control key to a Windows Key.
 ;RCtrl::LWin
+
 ; #############################################################################
 ; ###################################### End Of File Explorer.ahk
 ; #############################################################################
@@ -6169,27 +6143,27 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\WinVer.ahk
 
-
 #y::
-  RegRead, HiddenFiles_Status, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt
-  If (HiddenFiles_Status = 1)
-  {
-  	RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 0
-  }
-  Else
-  { 
-  	RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 1
-  }
+	RegRead, HiddenFiles_Status, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt
+	If (HiddenFiles_Status = 1)
+	{
+		RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 0
+	}
+	Else
+	{
+		RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 1
+	}
 
-  ; If Windows Vista/2008 or later (v 6.0)
-  If (WinVer() >= 6.0)
-  	send, {F5}
-  Else
-  {
-  	WinGetClass, CurrentWinClass, A
-  	PostMessage, 0x111, 28931,,, A
-  }
+	; If Windows Vista/2008 or later (v 6.0)
+	If (WinVer() >= 6.0)
+		send, {F5}
+	Else
+	{
+		WinGetClass, CurrentWinClass, A
+		PostMessage, 0x111, 28931,,, A
+	}
 Return
+
 ; #############################################################################
 ; ###################################### End Of File FileExtensionToggle.ahk
 ; #############################################################################
@@ -6206,27 +6180,27 @@ Return
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\WinVer.ahk
 
+#h::
+	RegRead, HiddenFiles_Status, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden
+	If (HiddenFiles_Status = 2)
+	{
+		RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 1
+	}
+	Else
+	{
+		RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 2
+	}
 
-#h:: 
-  RegRead, HiddenFiles_Status, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden
-  If (HiddenFiles_Status = 2)
-  {
-  	RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 1
-  }
-  Else
-  {
-  	RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 2
-  }
-
-  ; If Windows Vista/2008 or later (v 6.0)
-  If (WinVer() >= 6.0)
-  	send, {F5}
-  Else
-  {
-  	WinGetClass, CurrentWinClass, A
-  	PostMessage, 0x111, 28931,,, A
-  }
+	; If Windows Vista/2008 or later (v 6.0)
+	If (WinVer() >= 6.0)
+		send, {F5}
+	Else
+	{
+		WinGetClass, CurrentWinClass, A
+		PostMessage, 0x111, 28931,,, A
+	}
 Return
+
 ; #############################################################################
 ; ###################################### End Of File HiddenFilesToggle.ahk
 ; #############################################################################
@@ -6254,7 +6228,6 @@ Return
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
-
 ; Function Keys
 #F9::Send {Volume_Mute}
 #F10::Send {Media_Prev}
@@ -6268,6 +6241,7 @@ Return
 #Delete::Send {Media_Prev}
 #Home::Send {Media_Play_Pause}
 #End::Send {Media_Next}
+
 ; #############################################################################
 ; ###################################### End Of File MediaControls.ahk
 ; #############################################################################
@@ -6276,7 +6250,7 @@ Return
 ; ###################################### Beginning of file MouseControl.ahk
 ; #############################################################################
 ;************************************************;
-; Control the mouse with your keyboard. 
+; Control the mouse with your keyboard.
 ;
 ; Instructions:
 ;	AppsKey+Arrows	- Move mouse cursor
@@ -6287,13 +6261,11 @@ Return
 SendMode Input ; Recommended for new scripts due to its superior speed and reliability.
 #Include %A_ScriptDir%\..\Lib\AppsKey.ahk
 
-
 ; Move mouse pointer with Arrow keys
 AppsKey & Left::MouseMove, -5, 0, 0, R
 AppsKey & Right::MouseMove, 5, 0, 0, R
 AppsKey & Up::MouseMove, 0, -5, 0, R
 AppsKey & Down::MouseMove, 0, 5, 0, R
-
 
 ; Left Mouse Clicks
 ^Numpad0::Send {Click}
@@ -6301,12 +6273,12 @@ AppsKey & Down::MouseMove, 0, 5, 0, R
 AppsKey & Numpad0::Send {Click}
 AppsKey & NumpadIns::Send {Click}
 
-
 ; Right Mouse Clicks
 ^NumpadDot::Send {Click, right}
 ^NumpadDel::Send {Click, right}
 AppsKey & NumpadDot::Send {Click, right}
 AppsKey & NumpadDel::Send {Click, right}
+
 ; #############################################################################
 ; ###################################### End Of File MouseControl.ahk
 ; #############################################################################
@@ -6322,11 +6294,11 @@ AppsKey & NumpadDel::Send {Click, right}
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
-
 #IfWinActive - Notepad$ ahk_class Notepad
 	^w::WinClose
 	^Backspace::Send ^+{Left}{Backspace}
 #IfWinActive
+
 ; #############################################################################
 ; ###################################### End Of File Notepad.ahk
 ; #############################################################################
@@ -6338,26 +6310,26 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 ; Opens a path in Windows Explorer
 ; Credit: Richard
 ;
-; Instructions: CTRL + O to open 
+; Instructions: CTRL + O to open
 ; the path contained on the clipboard.
 ;************************************************;
 #NoEnv ; Recommended for performance and compatibility with future AutoHotkey releases.
-
 
 ; Open path on clipboard
 #o::
 {
 	Var = %clipboard%
 	OAutoTrim = %A_AutoTrim% ; Store Old AutoTrim Value.
-  AutoTrim On  ; Strip out any leading and trailing whitespace from selection
-  Var = %Var%	; Remove leading and trailing white space. Need AutoTrim On
+	AutoTrim On  ; Strip out any leading and trailing whitespace from selection
+	Var = %Var%	; Remove leading and trailing white space. Need AutoTrim On
 
 	SplitPath, var,, dir
-  run explorer.exe %dir%
+	run explorer.exe %dir%
 
-  AutoTrim, %OAutoTrim%
+	AutoTrim, %OAutoTrim%
 }
 return
+
 ; #############################################################################
 ; ###################################### End Of File OpenClipboardPath.ahk
 ; #############################################################################
@@ -6368,7 +6340,7 @@ return
 ;************************************************;
 ; Paste unformatted text from clipboard
 ;
-; Instructions: Paste using Ctrl+Shift+V 
+; Instructions: Paste using Ctrl+Shift+V
 ; to paste unformatted (plain) text.
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
@@ -6376,7 +6348,6 @@ return
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 CoordMode, Mouse, Screen
 #Include %A_ScriptDir%\..\Lib\BlockUserInput.ahk
-
 
 ; Paste without formatting
 ; Note: Has a rough time with remote file locations (UNC paths in explorer for instance)
@@ -6388,7 +6359,7 @@ CoordMode, Mouse, Screen
 	Clipboard = %Clipboard%			; Convert any copied files, HTML, or other formatted text to plain text.
 	ClipWait, 2
 	if ErrorLevel
-	{	
+	{
 		Clipboard := ClipSaved
 		ErrorLevel = 0				; Reset error flag
 		return
@@ -6400,20 +6371,19 @@ CoordMode, Mouse, Screen
 	VarSetCapacity(ClipSaved, 0)	; Free the memory in case the clipboard was very large.
 return
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; type out clipboard (useful for remote connections/software keys) ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ^!v::
 	ClipSaved := ClipBoardAll		; Save original clipboard contents
 	Clipboard = %Clipboard%			; Convert any copied files, HTML, or other formatted text to plain text.
-	
+
 	GoSub ClipLogic 				; Run logic on the clipboard's contents
 
 	Sleep 2000						; Give user time to select right window
 
 	; Send, {Raw}%Clipboard% ; Send the entire clipboard at once
-	
+
 	; send it one character at a time.
 	StringLen, Length, Clipboard ; Get length of clipboard to calculate progress bar
 
@@ -6458,7 +6428,7 @@ Return
 	Clipboard = %clipboard%  	; Convert any copied files, HTML, or other formatted text to plain text.
 
 	GoSub ClipLogic ; Run logic on the clipboard's contents
-	
+
 	; Warn if typing will take over 10 seconds.
 	StringLen, Length, Clipboard
 	If Length > 250
@@ -6473,9 +6443,9 @@ Return
 			Exit
 		}
 	}
-	
+
 	Sleep 2000 ; Give user time to select right window
-	
+
 	SetKeyDelay, 50 ; Slow the send rate for windows that can't keep up
 	StringLen, Length, Clipboard ; Get length of clipboard to calculate progress bar
 	; SendEvent {Raw}%Clipboard% ; Send all keys (useful if not wanting a progress bar)
@@ -6486,7 +6456,7 @@ Return
 	Gui, Add, Text, xp yp+2 hp wp Center BackgroundTrans vPercent, 0`%
 	Gui, Add, Text, yp+18 wp Center BackgroundTrans vCurrent
 	Gui, +AlwaysOnTop +Disabled -SysMenu +Owner
-	
+
 	;WinGetPos , x, y, w, h, A
 	;center_x = % x+(w/2)
 	;center_y = % y+(h/2)
@@ -6512,9 +6482,9 @@ Return
 
 	; Just in case keys get "stuck"
 	Send, {SHIFTUP}{ALTUP}{CTRLUP}
-	
+
 	Clipboard := ClipSaved  	; Restore the original clipboard. Note the use of Clipboard (not ClipboardAll).
-  ClipSaved =   				; Free the memory in case the clipboard was very large.
+	ClipSaved =   				; Free the memory in case the clipboard was very large.
 Return
 
 
@@ -6529,11 +6499,33 @@ ClipLogic:
 			StringReplace, Clipboard, Clipboard, -, `t, All ; Replace all hyphens (-) with tabs
 		}
 	}
-	
+
 	Clipboard = % RegExReplace(Clipboard, "\r\n?|\n\r?", "`n") ; Remove "double linebreaks" (\r\n)
 Return
+
 ; #############################################################################
 ; ###################################### End Of File PastePlain.ahk
+; #############################################################################
+
+; #############################################################################
+; ###################################### Beginning of file SameWindowClass.ahk
+; #############################################################################
+;************************************************;
+; Switch between apps of the same window class
+; Credit: Richard Frost
+;
+; Instructions: Alt+` (~ key)
+;************************************************;
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+
+!`::
+	WinGetClass, ActiveClass, A
+	WinActivateBottom, ahk_class %ActiveClass%
+return
+
+; #############################################################################
+; ###################################### End Of File SameWindowClass.ahk
 ; #############################################################################
 
 ; #############################################################################
@@ -6550,27 +6542,27 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 #Include %A_ScriptDir%\..\Lib\WinVer.ahk
 
-
 #s::
-WinActivate, ahk_class Progman ; Helpful to ensure new window will be activated properly. More Info: http://www.autohotkey.com/board/topic/85227-mozilla-firefox-and-runwinactivate-glitch/
-EnvGet, OutputVar, windir
+	WinActivate, ahk_class Progman ; Helpful to ensure new window will be activated properly. More Info: http://www.autohotkey.com/board/topic/85227-mozilla-firefox-and-runwinactivate-glitch/
+	EnvGet, OutputVar, windir
 
-; Check if OS is 64-bit, but ahk is running 32-bit (PtrSize = 4)
-If (A_Is64bitOS && A_PtrSize = 4)
-	Run, %OutputVar%\Sysnative\SnippingTool.exe ; Sysnative allows 32 bit applications to access System32 
-Else
-	Run, %OutputVar%\System32\SnippingTool.exe
+	; Check if OS is 64-bit, but ahk is running 32-bit (PtrSize = 4)
+	If (A_Is64bitOS && A_PtrSize = 4)
+		Run, %OutputVar%\Sysnative\SnippingTool.exe ; Sysnative allows 32 bit applications to access System32
+	Else
+		Run, %OutputVar%\System32\SnippingTool.exe
 
-; If Windows 8 (v 6.2) or Newer, automatically start snipping
-If (WinVer() > 6.1)
-	WinWaitActive, ahk_class Microsoft-Windows-Tablet-SnipperToolbar
-		send ^{PrintScreen}
+	; If Windows 8 (v 6.2) or Newer, automatically start snipping
+	If (WinVer() > 6.1)
+		WinWaitActive, ahk_class Microsoft-Windows-Tablet-SnipperToolbar
+			send ^{PrintScreen}
 return
 
 ; Close Snipping Tool Toolbar or Editor
 #IfWinActive ahk_class Microsoft-Windows-Tablet-Snipper
 	^w::WinClose
 #IfWinActive
+
 ; #############################################################################
 ; ###################################### End Of File SnippingShortcut.ahk
 ; #############################################################################
