@@ -9,5 +9,6 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 
 !`::
 	WinGetClass, ActiveClass, A
-	WinActivateBottom, ahk_class %ActiveClass%
+	WinGet, ActiveProcess, ProcessName, A
+	WinActivateBottom, ahk_class %ActiveClass% ahk_exe %ActiveProcess%
 return
