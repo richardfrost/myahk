@@ -8,7 +8,6 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Reload the main AHK Script
 RShift & LShift::
 LShift & RShift::
@@ -18,13 +17,11 @@ LShift & RShift::
 		Reload
 Return
 
-
 ; Exit AutoHotKey
 ^!Backspace::
 	TransparentWindow("Closing AHK", 450)
 	ExitApp
 Return
-
 
 ; Suspend & Pause AutoHotKey
 !Pause::
@@ -36,5 +33,5 @@ Return
 	If A_IsSuspended = 0
 		TransparentWindow("AHK Enabled", 400)
 
-  Pause, Toggle, 1 ; Pause running threads
+	Pause, Toggle, 1 ; Pause running threads
 Return

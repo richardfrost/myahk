@@ -10,7 +10,6 @@
 Global ExecutorToggle = 1 ; True for active, included in MyAHK-Build.ahk
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Only enable if Executor exists
 #If ExecutorExists()
 	ExecutorExists()

@@ -1,8 +1,8 @@
 ;************************************************;
-; Perform several actions by pressing keys in 
+; Perform several actions by pressing keys in
 ;   conjunction with the Apps Key.
 ;
-; Instructions: 
+; Instructions:
 ; 	AppsKey+Enter - Insert a line break
 ;	AppsKey+Tab	  - Insert tab
 ;	AppsKey+LWin  - Disable Windows keys
@@ -20,18 +20,15 @@
 
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 
-
 ; Insert a line break (useful when hitting enter will submit a form)
 AppsKey & Enter::
 	PutText("`r`n")
 Return
 
-
 ; Insert a tab (useful when pressing tab would change the focus)
 AppsKey & tab::
 	PutText("`t")
 Return
-
 
 ; Disable/Enable the Windows Keys
 AppsKey & LWin::
@@ -45,45 +42,43 @@ AppsKey & LWin::
 	}
 Return
 
-
 ; Search Google for selected text, or if URL go straight there.
 AppsKey & Insert::
 TempText := GetText()
 TempText := RegExReplace(TempText, "^\s+|\s+$") ;trim whitespace
 If RegExMatch(TempText, "\w\.[a-zA-Z]+(/|$)") ;contains .com etc
 {
-   If SubStr(TempText, 1, 4) != "http"
-      TempText := "http://" . TempText
+	If SubStr(TempText, 1, 4) != "http"
+		TempText := "http://" . TempText
 }
 Else
 {
-   If InStr(TempText, " ")
-   {
-      StringReplace TempText, TempText, %A_Space%, +
-      TempText := "%22" . TempText . "%22"
-   }
-   TempText := "http://www.google.com/search?&q=" . TempText
+	If InStr(TempText, " ")
+	{
+		StringReplace TempText, TempText, %A_Space%, +
+		TempText := "%22" . TempText . "%22"
+	}
+	TempText := "http://www.google.com/search?&q=" . TempText
 }
 Run %TempText%
 Return
-
 
 ; Hide or unhide the active window
 AppsKey & h::
 If GetKeyState("shift")
 {
-   Loop Parse, HiddenWins, |
-      WinShow ahk_id %A_LoopField%
-   HiddenWins =
+	Loop Parse, HiddenWins, |
+		WinShow ahk_id %A_LoopField%
+	HiddenWins =
 }
 else
 {
-   MyWin := WinExist("A")
-   if IsWindow(MyWin)
-   {
-      HiddenWins .= (HiddenWins ? "|" : "") . MyWin
-      WinHide ahk_id %MyWin%
-      GroupActivate All
-   }
+	MyWin := WinExist("A")
+	if IsWindow(MyWin)
+	{
+		HiddenWins .= (HiddenWins ? "|" : "") . MyWin
+		WinHide ahk_id %MyWin%
+		GroupActivate All
+	}
 }
 Return

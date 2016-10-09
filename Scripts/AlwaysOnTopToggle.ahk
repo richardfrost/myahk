@@ -7,12 +7,11 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
-
 ; Always on Top Toggle
 ^+a::
-; Don't allow the desktop shell to be Always on Top (Progman < Win8, WorkerW = Win8, Shell_TrayWnd = Taskbar, DV2ControlHost = Win7 StartMenu)
-WinGetClass, CurrentWinClass, A
-If (CurrentWinClass = "Progman" || CurrentWinClass = "WorkerW" || CurrentWinClass = "Shell_TrayWnd" || CurrentWinClass = "DV2ControlHost")
+	; Don't allow the desktop shell to be Always on Top (Progman < Win8, WorkerW = Win8, Shell_TrayWnd = Taskbar, DV2ControlHost = Win7 StartMenu)
+	WinGetClass, CurrentWinClass, A
+	If (CurrentWinClass = "Progman" || CurrentWinClass = "WorkerW" || CurrentWinClass = "Shell_TrayWnd" || CurrentWinClass = "DV2ControlHost")
 Return
 
 WinSet, AlwaysOnTop, Toggle, A		; Toggle Always on Top status

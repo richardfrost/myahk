@@ -18,7 +18,6 @@
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
-
 ; Function Keys
 #F9::Send {Volume_Mute}
 #F10::Send {Media_Prev}

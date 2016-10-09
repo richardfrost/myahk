@@ -1,7 +1,7 @@
 ;************************************************;
 ; Paste unformatted text from clipboard
 ;
-; Instructions: Paste using Ctrl+Shift+V 
+; Instructions: Paste using Ctrl+Shift+V
 ; to paste unformatted (plain) text.
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
@@ -9,7 +9,6 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 CoordMode, Mouse, Screen
 #Include %A_ScriptDir%\..\Lib\BlockUserInput.ahk
-
 
 ; Paste without formatting
 ; Note: Has a rough time with remote file locations (UNC paths in explorer for instance)
@@ -21,7 +20,7 @@ CoordMode, Mouse, Screen
 	Clipboard = %Clipboard%			; Convert any copied files, HTML, or other formatted text to plain text.
 	ClipWait, 2
 	if ErrorLevel
-	{	
+	{
 		Clipboard := ClipSaved
 		ErrorLevel = 0				; Reset error flag
 		return
@@ -33,20 +32,19 @@ CoordMode, Mouse, Screen
 	VarSetCapacity(ClipSaved, 0)	; Free the memory in case the clipboard was very large.
 return
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; type out clipboard (useful for remote connections/software keys) ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ^!v::
 	ClipSaved := ClipBoardAll		; Save original clipboard contents
 	Clipboard = %Clipboard%			; Convert any copied files, HTML, or other formatted text to plain text.
-	
+
 	GoSub ClipLogic 				; Run logic on the clipboard's contents
 
 	Sleep 2000						; Give user time to select right window
 
 	; Send, {Raw}%Clipboard% ; Send the entire clipboard at once
-	
+
 	; send it one character at a time.
 	StringLen, Length, Clipboard ; Get length of clipboard to calculate progress bar
 
@@ -91,7 +89,7 @@ Return
 	Clipboard = %clipboard%  	; Convert any copied files, HTML, or other formatted text to plain text.
 
 	GoSub ClipLogic ; Run logic on the clipboard's contents
-	
+
 	; Warn if typing will take over 10 seconds.
 	StringLen, Length, Clipboard
 	If Length > 250
@@ -106,9 +104,9 @@ Return
 			Exit
 		}
 	}
-	
+
 	Sleep 2000 ; Give user time to select right window
-	
+
 	SetKeyDelay, 50 ; Slow the send rate for windows that can't keep up
 	StringLen, Length, Clipboard ; Get length of clipboard to calculate progress bar
 	; SendEvent {Raw}%Clipboard% ; Send all keys (useful if not wanting a progress bar)
@@ -119,7 +117,7 @@ Return
 	Gui, Add, Text, xp yp+2 hp wp Center BackgroundTrans vPercent, 0`%
 	Gui, Add, Text, yp+18 wp Center BackgroundTrans vCurrent
 	Gui, +AlwaysOnTop +Disabled -SysMenu +Owner
-	
+
 	;WinGetPos , x, y, w, h, A
 	;center_x = % x+(w/2)
 	;center_y = % y+(h/2)
@@ -145,9 +143,9 @@ Return
 
 	; Just in case keys get "stuck"
 	Send, {SHIFTUP}{ALTUP}{CTRLUP}
-	
+
 	Clipboard := ClipSaved  	; Restore the original clipboard. Note the use of Clipboard (not ClipboardAll).
-  ClipSaved =   				; Free the memory in case the clipboard was very large.
+	ClipSaved =   				; Free the memory in case the clipboard was very large.
 Return
 
 
@@ -162,6 +160,6 @@ ClipLogic:
 			StringReplace, Clipboard, Clipboard, -, `t, All ; Replace all hyphens (-) with tabs
 		}
 	}
-	
+
 	Clipboard = % RegExReplace(Clipboard, "\r\n?|\n\r?", "`n") ; Remove "double linebreaks" (\r\n)
 Return
