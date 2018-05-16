@@ -27,26 +27,43 @@ Global BlockMouseToggle = 0   ; Set default value for BlockMouseToggle variable
 Global ExecutorToggle = 1     ; True for active
 Global CMDToggle = 1          ; True for active
 
+; Browser Windows
+GroupAdd, BrowserWindows, ahk_exe chrome.exe      ; Chrome
+GroupAdd, BrowserWindows, ahk_exe firefox.exe     ; Firefox
 
 ; Close various windows with CTRL+W: (System windows may require admin privileges)
+GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
+GroupAdd, CloseWindows, Calculator ahk_class CalcFrame              ; Calculator (>Win 10)
+GroupAdd, CloseWindows, Calculator ahk_class ApplicationFrameWindow ; Calculator (Win 10)
+GroupAdd, CloseWindows, Notepad$ ahk_class Notepad                  ; Notepad
+GroupAdd, CloseWindows, ahk_class Microsoft-Windows-Tablet-Snipper  ; Snipping Tool
+GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
 GroupAdd, CloseWindows, ahk_class HelpPane                          ; System: Windows F1 Help Pane
 GroupAdd, CloseWindows, Task Manager ahk_class TaskManagerWindow    ; System: Task Manager
 GroupAdd, CloseWindows, ahk_class #32770                            ; System: Properties/Applet window
 GroupAdd, CloseWindows, ahk_class MMCMainFrame                      ; System: MMC windows
-GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
-GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
+
+; CommandPrompt Windows Group
+GroupAdd, CommandPromptWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+GroupAdd, CommandPromptWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
+
+; Console Windows Group
+GroupAdd, ConsoleWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+GroupAdd, ConsoleWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
+GroupAdd, ConsoleWindows, i)PowerShell$ ahk_class ConsoleWindowClass   ; PowerShell
 
 ; Explorer Group to disable F1 help in Explorer.ahk
 GroupAdd, DisableHelpF1, ahk_class CabinetWClass  ; Win8 Explorer
 GroupAdd, DisableHelpF1, ahk_class WorkerW        ; Win8 Desktop
 GroupAdd, DisableHelpF1, ahk_class Progman        ; Win7 Explorer
 
-
+; #############################################################################
+; ###################################### Beginning of Nags
+; #############################################################################
 ; Group for annoying nag screens
 GroupAdd, NagWindows, ^This is an unregistered copy$ ahk_class #32770   ; Sublime Text
 GroupAdd, NagWindows, ^Please Donate$ ahk_class SunAwtDialog            ; FileBot
 GroupAdd, NagWindows, ^Sublime Text$ ahk_class #32770, Buy Now          ; Sublime SFTP
-
 
 SetTimer, Nags, 30
 
@@ -55,6 +72,9 @@ Nags:
 IfWinActive ahk_group NagWindows
 WinClose
 Return
+; #############################################################################
+; ###################################### End of Nags
+; #############################################################################
 
 
 
@@ -5535,6 +5555,31 @@ Return
 ; #############################################################################
 
 ; #############################################################################
+; ###################################### Beginning of file Browsers.ahk
+; #############################################################################
+;************************************************;
+; Browser Shortcuts
+;
+; Prevent closing all browser windows (Ctrl+Shift+Q)
+; Credit: Richard
+;************************************************;
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
+
+; Browser Windows
+; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
+GroupAdd, BrowserWindows, ahk_exe chrome.exe      ; Chrome
+GroupAdd, BrowserWindows, ahk_exe firefox.exe     ; Firefox
+
+#IfWinActive ahk_group BrowserWindows
+^+q::Return
+#IfWinActive
+; #############################################################################
+; ###################################### End Of File Browsers.ahk
+; #############################################################################
+
+; #############################################################################
 ; ###################################### Beginning of file Calculator.ahk
 ; #############################################################################
 ;************************************************;
@@ -5559,12 +5604,6 @@ Return
 	Run, calc.exe ; Run application
 	WinActivate, ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
 Return
-
-; Close Calculator Window
-#IfWinActive ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
-	^w::WinClose
-#IfWinActive
-
 ; #############################################################################
 ; ###################################### End Of File Calculator.ahk
 ; #############################################################################
@@ -5677,28 +5716,43 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 Global CMDToggle = 1 ; Included in MyAHK-Build.ahk
 #Include %A_ScriptDir%\..\Lib\TransparentWindow.ahk
 
+; CommandPrompt Windows Group
+; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
+GroupAdd, CommandPromptWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+GroupAdd, CommandPromptWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
+
+; Console Windows Group
+; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
+GroupAdd, ConsoleWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+GroupAdd, ConsoleWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
+GroupAdd, ConsoleWindows, i)PowerShell$ ahk_class ConsoleWindowClass   ; PowerShell
+
 ; Command Prompt Tweaks
-#IfWinActive ahk_class ConsoleWindowClass
+#If WinActive("ahk_group ConsoleWindows")
 ; Toggle Command Prompt aliases on/off with ALT+F12 (On by default)
 !F12::
 	CMDToggle := CMDToggle<1  ? 1 : 0
 
 	WinGetPos,x,y,w,h,A 				; Get active window's width/heigth
-	boxW:=146, boxH=38 ; Variables for TransparentWindow box size (224, 55)
+	boxW:=200, boxH=38 ; Variables for TransparentWindow box size (224, 55)
 
 	if CMDToggle
-		TransparentWindow("CMD Aliases On", 550, 12,"green",0,230,x+w/2-boxW/2,y+h/2-boxH/2,boxW,boxH)
+		TransparentWindow("CMD Enhancements On", 550, 12,"green",0,230,x+w/2-boxW/2,y+h/2-boxH/2,boxW,boxH)
 	else
-		TransparentWindow("CMD Aliases Off", 550, 12,"green",0,230,x+w/2-boxW/2,y+h/2-boxH/2,boxW,boxH)
+		TransparentWindow("CMD Enhancements Off", 550, 12,"green",0,230,x+w/2-boxW/2,y+h/2-boxH/2,boxW,boxH)
 Return
+#If
 
+; For Command Prompt and PowerShell
+#If WinActive("ahk_group ConsoleWindows") && (CMDToggle)
 ^v::SendInput {Raw}%ClipBoard% ; Paste
-^w::WinClose, A ; Close CMD window
+^w::WinClose, A ; Close window
 
 ; Navigation
 ^a::Send, {Home}
 ^e::Send, {End}
 ^u::Send, ^{Home}
+^k::Send, ^{End}
 
 ; Scrolling
 ^Up::Send {WheelUp}
@@ -5713,10 +5767,12 @@ Return
 	Loop, 10
 		Send {WheelDown}
 Return
-#IfWinActive
+#If
 
-; Command Prompt aliases that can be problematic with some bash-like shells. Disable with ALT+F12, not applied to PowerShell windows.
-#If WinActive("ahk_class ConsoleWindowClass","","i)PowerShell") && (CMDToggle)
+; For Command Prompt
+#If WinActive("ahk_group CommandPromptWindows") && (CMDToggle)
+; Shortcuts
+^l::Send, cls{enter}
 
 ; Specify user home directory with ~
 :*:~::
@@ -5735,6 +5791,10 @@ return
 :c:rm::del
 #If
 
+; For Arch WSL
+#If WinActive("ahk_exe Arch.exe") && (CMDToggle)
+^v::SendInput {Raw}%ClipBoard% ; Paste
+#If
 ; #############################################################################
 ; ###################################### End Of File CMDPrompt.ahk
 ; #############################################################################
@@ -6040,12 +6100,16 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
 ; Close various windows with CTRL+W (System windows may require admin privileges)
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
+GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
+GroupAdd, CloseWindows, Calculator ahk_class CalcFrame              ; Calculator (>Win 10)
+GroupAdd, CloseWindows, Calculator ahk_class ApplicationFrameWindow ; Calculator (Win 10)
+GroupAdd, CloseWindows, Notepad$ ahk_class Notepad                  ; Notepad
+GroupAdd, CloseWindows, ahk_class Microsoft-Windows-Tablet-Snipper  ; Snipping Tool
+GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
 GroupAdd, CloseWindows, ahk_class HelpPane                          ; System: Windows F1 Help Pane
 GroupAdd, CloseWindows, Task Manager ahk_class TaskManagerWindow    ; System: Task Manager
 GroupAdd, CloseWindows, ahk_class #32770                            ; System: Properties/Applet window
 GroupAdd, CloseWindows, ahk_class MMCMainFrame                      ; System: MMC windows
-GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
-GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
 
 ; Disable the F1 help window, helpctr.exe
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
@@ -6288,15 +6352,15 @@ AppsKey & NumpadDel::Send {Click, right}
 ; #############################################################################
 ;************************************************;
 ; Script Function:
-;   Add CTRL+W shortcut to close Notepad.
 ;   Add CTRL+Backspace to remove previous word.
+;   Add CTRL+Delete to remove previous word.
 ;************************************************;
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
 #IfWinActive - Notepad$ ahk_class Notepad
-	^w::WinClose
-	^Backspace::Send ^+{Left}{Backspace}
+^Backspace::Send ^+{Left}{Backspace}
+^Delete::Send ^+{Right}{Backspace}
 #IfWinActive
 
 ; #############################################################################
@@ -6525,7 +6589,6 @@ SetTitleMatchMode Regex
 	WinGet, ActiveProcess, ProcessName, A
 	WinActivateBottom, ahk_class i)%ActiveClass% ahk_exe i)%ActiveProcess%
 return
-
 ; #############################################################################
 ; ###################################### End Of File SameWindowClass.ahk
 ; #############################################################################
@@ -6545,26 +6608,21 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 #Include %A_ScriptDir%\..\Lib\WinVer.ahk
 
 #s::
-	WinActivate, ahk_class Progman ; Helpful to ensure new window will be activated properly. More Info: http://www.autohotkey.com/board/topic/85227-mozilla-firefox-and-runwinactivate-glitch/
 	EnvGet, OutputVar, windir
 
+	WinActivate, ahk_class Progman ; Helpful to ensure new window will be activated properly. More Info: http://www.autohotkey.com/board/topic/85227-mozilla-firefox-and-runwinactivate-glitch/
 	; Check if OS is 64-bit, but ahk is running 32-bit (PtrSize = 4)
 	If (A_Is64bitOS && A_PtrSize = 4)
 		Run, %OutputVar%\Sysnative\SnippingTool.exe ; Sysnative allows 32 bit applications to access System32
 	Else
-		Run, %OutputVar%\System32\SnippingTool.exe
+		Run, SnippingTool.exe
 
 	; If Windows 8 (v 6.2) or Newer, automatically start snipping
 	If (WinVer() > 6.1)
-		WinWaitActive, ahk_class Microsoft-Windows-Tablet-SnipperToolbar
+		WinActivate, ahk_exe SnippingTool.exe
+		WinWaitActive, ahk_exe SnippingTool.exe
 			send ^{PrintScreen}
 return
-
-; Close Snipping Tool Toolbar or Editor
-#IfWinActive ahk_class Microsoft-Windows-Tablet-Snipper
-	^w::WinClose
-#IfWinActive
-
 ; #############################################################################
 ; ###################################### End Of File SnippingShortcut.ahk
 ; #############################################################################
