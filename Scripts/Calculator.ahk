@@ -20,8 +20,3 @@ Return
 	Run, calc.exe ; Run application
 	WinActivate, ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
 Return
-
-; Close Calculator Window
-#IfWinActive ^Calculator$ ; ahk_class CalcFrame ; Removed ahk_class for Windows 10 support
-	^w::WinClose
-#IfWinActive

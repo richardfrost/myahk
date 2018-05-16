@@ -12,12 +12,16 @@ SetTitleMatchMode Regex ; Required if not specified elsewhere in the script.
 
 ; Close various windows with CTRL+W (System windows may require admin privileges)
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
+GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
+GroupAdd, CloseWindows, Calculator ahk_class CalcFrame              ; Calculator (>Win 10)
+GroupAdd, CloseWindows, Calculator ahk_class ApplicationFrameWindow ; Calculator (Win 10)
+GroupAdd, CloseWindows, Notepad$ ahk_class Notepad                  ; Notepad
+GroupAdd, CloseWindows, ahk_class Microsoft-Windows-Tablet-Snipper  ; Snipping Tool
+GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
 GroupAdd, CloseWindows, ahk_class HelpPane                          ; System: Windows F1 Help Pane
 GroupAdd, CloseWindows, Task Manager ahk_class TaskManagerWindow    ; System: Task Manager
 GroupAdd, CloseWindows, ahk_class #32770                            ; System: Properties/Applet window
 GroupAdd, CloseWindows, ahk_class MMCMainFrame                      ; System: MMC windows
-GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
-GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
 
 ; Disable the F1 help window, helpctr.exe
 ; (GroupAdd Lines are also included in MyAHK-Build.ahk, duplicates are ignored)
