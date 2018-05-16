@@ -12,10 +12,10 @@ MyWorkingDir = %A_ScriptDir%
 OutputFileName = %MyWorkingDir%\MyAHK\MyAHK.ahk
 
 ; Check to see if there is an existing combined script, and offer to use it.
-IfExist, %OutputFileName%
-	MsgBox, 262164, Combined Script Detected, Would you like to overwrite the existing MyAHK.ahk file? ; always on top: 262144
-		IfMsgBox No
-			Goto, Compile
+; IfExist, %OutputFileName%
+; 	MsgBox, 262164, Combined Script Detected, Would you like to overwrite the existing MyAHK.ahk file? ; always on top: 262144
+; 		IfMsgBox No
+;			Goto, Compile
 
 ; @IncludeFolders:
 ; A list of all the folders to search:
@@ -161,26 +161,43 @@ FileAppend ,
 	Global ExecutorToggle = 1     ; True for active
 	Global CMDToggle = 1          ; True for active
 
+	; Browser Windows
+	GroupAdd, BrowserWindows, ahk_exe chrome.exe      ; Chrome
+	GroupAdd, BrowserWindows, ahk_exe firefox.exe     ; Firefox
 
 	; Close various windows with CTRL+W: (System windows may require admin privileges)
+	GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
+	GroupAdd, CloseWindows, Calculator ahk_class CalcFrame              ; Calculator (>Win 10)
+	GroupAdd, CloseWindows, Calculator ahk_class ApplicationFrameWindow ; Calculator (Win 10)
+	GroupAdd, CloseWindows, Notepad$ ahk_class Notepad                  ; Notepad
+	GroupAdd, CloseWindows, ahk_class Microsoft-Windows-Tablet-Snipper  ; Snipping Tool
+	GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
 	GroupAdd, CloseWindows, ahk_class HelpPane                          ; System: Windows F1 Help Pane
 	GroupAdd, CloseWindows, Task Manager ahk_class TaskManagerWindow    ; System: Task Manager
 	GroupAdd, CloseWindows, ahk_class #32770                            ; System: Properties/Applet window
 	GroupAdd, CloseWindows, ahk_class MMCMainFrame                      ; System: MMC windows
-	GroupAdd, CloseWindows, ahk_class USurface_\d{5} ahk_exe Steam.exe  ; Steam
-	GroupAdd, CloseWindows, ahk_class FM ahk_exe 7zFM.exe               ; 7-Zip
 
-  ; Explorer Group to disable F1 help in Explorer.ahk
-  GroupAdd, DisableHelpF1, ahk_class CabinetWClass  ; Win8 Explorer
-  GroupAdd, DisableHelpF1, ahk_class WorkerW        ; Win8 Desktop
-  GroupAdd, DisableHelpF1, ahk_class Progman        ; Win7 Explorer
+	; CommandPrompt Windows Group
+	GroupAdd, CommandPromptWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+	GroupAdd, CommandPromptWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
 
+	; Console Windows Group
+	GroupAdd, ConsoleWindows, Command Prompt ahk_class ConsoleWindowClass  ; Command Prompt
+	GroupAdd, ConsoleWindows, i)\\cmd.exe ahk_class ConsoleWindowClass     ; Command Prompt
+	GroupAdd, ConsoleWindows, i)PowerShell$ ahk_class ConsoleWindowClass   ; PowerShell
 
+	; Explorer Group to disable F1 help in Explorer.ahk
+	GroupAdd, DisableHelpF1, ahk_class CabinetWClass  ; Win8 Explorer
+	GroupAdd, DisableHelpF1, ahk_class WorkerW        ; Win8 Desktop
+	GroupAdd, DisableHelpF1, ahk_class Progman        ; Win7 Explorer
+
+	; #############################################################################
+	; ###################################### Beginning of Nags
+	; #############################################################################
 	; Group for annoying nag screens
 	GroupAdd, NagWindows, ^This is an unregistered copy$ ahk_class #32770   ; Sublime Text
 	GroupAdd, NagWindows, ^Please Donate$ ahk_class SunAwtDialog            ; FileBot
 	GroupAdd, NagWindows, ^Sublime Text$ ahk_class #32770, Buy Now          ; Sublime SFTP
-
 
 	SetTimer, Nags, 30
 
@@ -189,6 +206,9 @@ FileAppend ,
 		IfWinActive ahk_group NagWindows
 			WinClose
 	Return
+	; #############################################################################
+	; ###################################### End of Nags
+	; #############################################################################
 
 	%IncludeFiles%
 )
